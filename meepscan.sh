@@ -10,6 +10,18 @@ RED="\033[1;31m"
 GREEN="\033[1;32m"
 NOCOLOR="\033[0m"
 
+# Banner
+
+function banner() {
+	clear
+	echo -e "${GREEN}"
+	echo -e " __  __  ____  ____  ____  ___   ___    __    _  _  ____  ____  "
+	echo -e "(  \/  )( ___)( ___)(  _ \/ __) / __)  /__\  ( \( )( ___)(  _ \ "
+	echo -e " )    (  )__)  )__)  )___/\__ \( (__  /(__)\  )  (  )__)  )   / "
+	echo -e "(_/\/\_)(____)(____)(__)  (___/ \___)(__)(__)(_)\_)(____)(_)\_) "                                                                       
+	echo -e "${NOCOLORS}v1.4.1" 
+}
+
 # User root check
 
 function user() {
@@ -42,6 +54,44 @@ function app_install () {
 	fi
 }
 
+function help() {
+less << _EOF_
+
+ Meepscan -- Nmap Scanner (Version 1.4.1)  -help
+
+ Meepscan is a tool that automates nmap scanning of defined ip, based in
+ Linux systems.
+
+ Press "q" to exit this Help page.
+
+ Commands:
+ 
+ 	Choose directory
+	git clone git@github.com:meepmaster360/meepscan.git
+	cd meepscan
+	$sudo bash meescan.sh 
+	or 
+	$chmod +x meepscan.sh (once) 
+	$sudo ./meepscan.
+
+ By Meepmaster360
+
+ Disclaimer:
+
+ THIS SOFTWARE IS PROVIDED BY MEEPMASTER360 “AS IS” AND ANY EXPRESS OR IMPLIED
+ WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+ EVENT SHALL MEEPMASTER BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+ BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+ IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ POSSIBILITY OF SUCH DAMAGE.
+
+_EOF_
+}
+
 # Nmap open ports
 
 function nmap_ports_open () {
@@ -50,14 +100,16 @@ function nmap_ports_open () {
 	echo -e "\n${GREEN}Grabbing open ports...${NOCOLOR}"
 	ports=$(nmap -p- --min-rate 1000 -T4 $ip | grep ^[0-9] | cut -d '/' -f 1 | tr '\n' ',' | sed s/,$//)  
 	echo -e "\n${GREEN}Ports grabbed!${NOCOLOR}"
-	echo -e "\n${GREEN}Scanning open ports...${NOCOLOR}"
-	nmap -sC -sV -Pn -p $ports $ip
+	echo -e "\n${GREEN}Scanning open ports...${NOCOLOR}\n"
+	sudo nmap -T4 -sC -sV -A -Pn -p $ports $ip
 	echo				
 }	
 
 # Call functions
 
+banner
 user
 connect
 app_install
 nmap_ports_open
+# help (call latter)
